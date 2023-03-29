@@ -14,6 +14,7 @@ const Task = ({ index, task, manipulateTask }) => {
   const handleEdit = () => {
     setTextAreaVisibility(true);
     if (description) {
+      if (description.includes('</script>')) { return window.alert('Please enter valid input'); }
       manipulateTask(index, 'edit', description);
       setDescription('');
       setTextAreaVisibility(false);
