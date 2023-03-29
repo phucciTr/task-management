@@ -23,6 +23,7 @@ const Task = ({ index, task, manipulateTask }) => {
 
   const handleCancelEdit = () => {
     setTextAreaVisibility(false);
+    setDescription('');
   }
 
 
