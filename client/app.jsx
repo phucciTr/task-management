@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import Task from './components/Task.jsx';
+import AddTask from './components/AddTask.jsx';
 import axios from 'axios';
 
 
@@ -12,22 +13,53 @@ const App = () => {
       .then((json) => setTasks(json.data));
   }, [])
 
-  const deleteTask = (index) => {
-    const newTasks = [...tasks];
-    newTasks.splice(index, 1);
-    setTasks(newTasks);
+  const manipulateTask = async (index, action, newDescription) => {
+    const newTasks = [...tasks], currTask = newTasks[index];
+    const taskId = currTask.id;
+
+    try {
+      if (action === 'delete') {
+        await axios.delete(`/task/${taskId}`);
+        newTasks.splice(index, 1);
+      }
+      if (action === 'edit') {
+        await axios.put(`/task/description/${taskId}`, { description: newDescription });
+        newTasks[index].description = newDescription;
+      }
+      if (action === 'check') {
+        await axios.put(`/task/isComplete/${taskId}`, { isComplete: !currTask.isComplete });
+        newTasks[index].isComplete = !currTask.isComplete;
+      }
+
+      setTasks(newTasks);
+    } catch(err) {
+      console.log('error manipulating task = ', err);
+    }
+  }
+
+  const addTask = (newTask) => {
+    axios.post('/task', newTask)
+      .then((res) => {
+        newTask.id = res.data;
+        setTasks([...tasks, newTask]);
+      })
+      .catch((err) => console.log('err = ', err));
   };
 
   return (
     <div>
       <h1>hello</h1>
+      <AddTask addTask={addTask}/>
+
       <table>
         <tbody>
           <tr>
             <th>Title</th>
             <th>Description</th>
+            <th>Due Date</th>
+            <th>Priority</th>
           </tr>
-          {tasks.map((task, i) => <Task deleteTask={deleteTask} index={i} task={task} />)}
+          {tasks.map((task, i) => <Task manipulateTask={manipulateTask} index={i} task={task} />)}
         </tbody>
       </table>
     </div>
