@@ -48,8 +48,6 @@ const App = () => {
       .catch((err) => console.log('err = ', err));
   };
 
-  console.log('rerender')
-
   return (
     <div>
       <h1>hello</h1>
