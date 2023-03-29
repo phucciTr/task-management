@@ -52,7 +52,7 @@ const App = () => {
     <div>
       <h1>hello</h1>
       <AddTask addTask={addTask}/>
-      <FilterTask setTasks={setTasks} setCompleteFilter={setCompleteFilter} completeFilter={completeFilter} tasks={tasks}/>
+      <FilterTask setTasks={setTasks} setCompleteFilter={setCompleteFilter} tasks={tasks}/>
 
       <table>
         <tbody>
