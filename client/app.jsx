@@ -2,11 +2,13 @@ import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import Task from './components/Task.jsx';
 import AddTask from './components/AddTask.jsx';
+import FilterTask from './components/FilterTask.jsx';
 import axios from 'axios';
 
 
 const App = () => {
   const [tasks, setTasks] = useState([]);
+  const [completeFilter, setCompleteFilter] = useState(false);
 
   useEffect(() => {
     axios.get('/tasks')
@@ -46,10 +48,13 @@ const App = () => {
       .catch((err) => console.log('err = ', err));
   };
 
+  console.log('rerender')
+
   return (
     <div>
       <h1>hello</h1>
       <AddTask addTask={addTask}/>
+      <FilterTask setTasks={setTasks} setCompleteFilter={setCompleteFilter} completeFilter={completeFilter} tasks={tasks}/>
 
       <table>
         <tbody>
@@ -59,7 +64,9 @@ const App = () => {
             <th>Due Date</th>
             <th>Priority</th>
           </tr>
-          {tasks.map((task, i) => <Task manipulateTask={manipulateTask} index={i} task={task} />)}
+          {tasks.filter((task) =>
+            !completeFilter || (completeFilter && task.isComplete)).map((task, i) =>
+              <Task manipulateTask={manipulateTask} index={i} task={task} />)}
         </tbody>
       </table>
     </div>
