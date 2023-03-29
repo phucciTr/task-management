@@ -11,7 +11,7 @@ const AddTask = ({ addTask }) => {
   });
 
   const handleChange = (e) => {
-    if (e.target.name === 'dueDate' && e.target.value !== '' && (e.target.value < 1 || e.target.value > 31 || e.target.value === 'e')) { return; }
+    if (e.target.name === 'dueDate' && e.target.value !== '' && (e.target.value < 1 || e.target.value > 31)) { return; }
     if (e.target.name === 'dueMonth' && e.target.value !== '' && (e.target.value < 1 || e.target.value > 12)) { return; }
     if (e.target.name === 'priority' && e.target.value !== '' && e.target.value < 1) { return; }
     setTask((task) => ({...task, [e.target.name]: e.target.value}));
