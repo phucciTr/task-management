@@ -6,7 +6,7 @@ import FilterTask from './FilterTask.jsx';
 import axios from 'axios';
 
 
-const TaskList = ({ loggedInUser, userId }) => {
+const TaskList = ({ loggedInUser, userId, setStep }) => {
   const [tasks, setTasks] = useState([]);
   const [completeFilter, setCompleteFilter] = useState(false);
 
@@ -50,6 +50,11 @@ const TaskList = ({ loggedInUser, userId }) => {
       .catch((err) => console.log('err = ', err));
   };
 
+  const handleLinkClick = (e) => {
+    e.preventDefault();
+    setStep(1);
+  }
+
   return (
     <div>
       <h1>{`hello ${loggedInUser}`} </h1>
@@ -69,6 +74,10 @@ const TaskList = ({ loggedInUser, userId }) => {
               <Task manipulateTask={manipulateTask} index={i} task={task} />)}
         </tbody>
       </table>
+      <br/>
+      <br/>
+
+      <a href='' onClick={handleLinkClick} >Log Out</a>
     </div>
   )
 }

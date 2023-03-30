@@ -36,7 +36,7 @@ const App = () => {
   const pages = [
     <SignUp setStep={setStep} submitForm={submitForm} setLoginError={setLoginError} />,
     <Login setStep={setStep} submitForm={submitForm} setLoginError={setLoginError}/>,
-    <TaskList loggedInUser={loggedInUser.name} userId={loggedInUser.id} />
+    <TaskList loggedInUser={loggedInUser.name} userId={loggedInUser.id} setStep={setStep} />
   ];
 
   return (
