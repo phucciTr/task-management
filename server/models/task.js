@@ -8,9 +8,9 @@ exports.addTask = (newTask) => {
   })
 };
 
-exports.getTasks = () => {
+exports.getTasks = (userId) => {
   return new Promise((resolve, reject) => {
-    db.queryAsync('SELECT * FROM tasks')
+    db.queryAsync('SELECT * FROM tasks WHERE userId = ?', userId)
       .then((data) => resolve(data))
       .catch((err) => reject(err));
   });

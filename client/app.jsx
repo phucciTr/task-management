@@ -1,72 +1,52 @@
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
-import Task from './components/Task.jsx';
-import AddTask from './components/AddTask.jsx';
-import FilterTask from './components/FilterTask.jsx';
+import TaskList from './components/TaskList.jsx';
+import Login from './components/Login.jsx';
+import SignUp from './components/SignUp.jsx';
 import axios from 'axios';
 
 
 const App = () => {
-  const [tasks, setTasks] = useState([]);
-  const [completeFilter, setCompleteFilter] = useState(false);
+  const [step, setStep] = useState(1);
+  const [loggedInUser, setLoggedInUser] = useState({ name: '', id: '' });
+  const [loginError, setLoginError] = useState('');
 
-  useEffect(() => {
-    axios.get('/tasks')
-      .then((json) => setTasks(json.data));
-  }, [])
-
-  const manipulateTask = async (index, action, newDescription) => {
-    const newTasks = [...tasks], currTask = newTasks[index];
-    const taskId = currTask.id;
+  const submitForm = async (e, authType, user) => {
+    e.preventDefault();
 
     try {
-      if (action === 'delete') {
-        await axios.delete(`/task/${taskId}`);
-        newTasks.splice(index, 1);
+      if (authType === 'signup') {
+        const signedRes = await axios.post(('/user'), user);
+        setStep(1);
+        setLoginError('');
       }
-      if (action === 'edit') {
-        await axios.put(`/task/description/${taskId}`, { description: newDescription });
-        newTasks[index].description = newDescription;
-      }
-      if (action === 'check') {
-        await axios.put(`/task/isComplete/${taskId}`, { isComplete: !currTask.isComplete });
-        newTasks[index].isComplete = !currTask.isComplete;
+      if (authType === 'login') {
+        const loggedRes = await axios.post(('/user/login'), user);
+        setLoggedInUser({name: loggedRes.data.name, id: loggedRes.data.id });
+        setStep(2);
+        setLoginError('');
       }
 
-      setTasks(newTasks);
-    } catch(err) {
-      console.log('error manipulating task = ', err);
+    } catch(e) {
+      console.log('error authenticating = ', e.response.data);
+      setLoginError(e.response.data);
     }
   }
 
-  const addTask = (newTask) => {
-    axios.post('/task', newTask)
-      .then((res) => {
-        newTask.id = res.data;
-        setTasks([...tasks, newTask]);
-      })
-      .catch((err) => console.log('err = ', err));
-  };
+  const pages = [
+    <SignUp setStep={setStep} submitForm={submitForm} setLoginError={setLoginError} />,
+    <Login setStep={setStep} submitForm={submitForm} setLoginError={setLoginError}/>,
+    <TaskList loggedInUser={loggedInUser.name} userId={loggedInUser.id} />
+  ];
+
+  console.log('loginError = ', loginError)
+
 
   return (
     <div>
-      <h1>hello</h1>
-      <AddTask addTask={addTask}/>
-      <FilterTask setTasks={setTasks} setCompleteFilter={setCompleteFilter} tasks={tasks}/>
-
-      <table>
-        <tbody>
-          <tr>
-            <th>Title</th>
-            <th>Description</th>
-            <th>Due Date</th>
-            <th>Priority</th>
-          </tr>
-          {tasks.filter((task) =>
-            !completeFilter || (completeFilter && task.isComplete)).map((task, i) =>
-              <Task manipulateTask={manipulateTask} index={i} task={task} />)}
-        </tbody>
-      </table>
+      {pages.map((page, i) => step === i && page)}
+      {loginError === 'incorrect' && <h2>Please enter correct information</h2>}
+      {loginError === 'taken' && <h2>Username taken. Please choose a different name</h2>}
     </div>
   )
 }
