@@ -11,9 +11,7 @@ const App = () => {
   const [loggedInUser, setLoggedInUser] = useState({ name: '', id: '' });
   const [loginError, setLoginError] = useState('');
 
-  const submitForm = async (e, authType, user) => {
-    e.preventDefault();
-
+  const submitForm = async (authType, user) => {
     try {
       if (authType === 'signup') {
         const signedRes = await axios.post(('/user'), user);

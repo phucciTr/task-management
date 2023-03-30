@@ -24,7 +24,7 @@ const SignUp = ({ setStep, submitForm, setLoginError }) => {
         if (user.name.includes('</script>' || user.password.includes('</script>'))) { return window.alert('Please enter valid infos'); }
         if (!user.name || !user.password) { return window.alert('Please fill out all infos') }
         setUser({ name: '', password: '' });
-        submitForm(e, 'signup', user)
+        submitForm('signup', user)
       }}>
           <label>
             Name: <input type="text" name="name" value={user.name} onChange={handleFormChange} />
