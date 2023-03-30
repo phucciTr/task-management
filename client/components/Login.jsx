@@ -20,6 +20,9 @@ const Login = ({ setStep, submitForm, setLoginError }) => {
       <h1>Please Log In</h1>
 
       <form onSubmit={(e) => {
+        e.preventDefault();
+        if (user.name.includes('</script>' || user.password.includes('</script>'))) { return window.alert('Please enter valid infos'); }
+        if (!user.name || !user.password) { return window.alert('Please fill out all infos'); }
         setUser({ name: '', password: '' });
         submitForm(e, 'login', user)
       }}>
