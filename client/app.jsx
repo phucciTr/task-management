@@ -39,9 +39,6 @@ const App = () => {
     <TaskList loggedInUser={loggedInUser.name} userId={loggedInUser.id} />
   ];
 
-  console.log('loginError = ', loginError)
-
-
   return (
     <div>
       {pages.map((page, i) => step === i && page)}
