@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon server/server.js",
     "build": "webpack --watch",
-    "demo": "webpack && node server/server.js"
+    "demo": "npm run build & npm run start"
   },
   "author": "",
   "license": "ISC",

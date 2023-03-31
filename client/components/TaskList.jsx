@@ -87,7 +87,7 @@ const TaskList = ({ user, setStep }) => {
       <br/>
       <br/>
 
-      {authErr === 'Not authorized' && <h2>User is not authorized to view tasks or perform task action</h2>}
+      {authErr === 'Not authorized' && <h2>User is not authorized to view tasks or perform task action due to invalid web token</h2>}
       <a href='' onClick={handleLinkClick} >Log Out</a>
     </div>
   )

@@ -4,7 +4,9 @@ const path = require('path');
 const Task = require('./models/task.js');
 const Auth = require('./models/auth.js');
 const authToken = require('./middleware/authToken.js').authToken;
+const crypto = require('crypto');
 
+process.env.ACCESS_TOKEN_SECRET = crypto.randomBytes(50).toString('hex');
 
 const app = express();
 const PORT = 3000;
@@ -28,8 +30,6 @@ app.post('/user/login', (req, res) => {
 
 // Task CRUD operations
 app.get('/tasks/:userId', authToken, (req, res) => {
-  console.log('req.body = ', req.body);
-
   Task.getTasks(req.params.userId)
     .then((tasks) => res.send(tasks))
     .catch((err) => res.status(404));
