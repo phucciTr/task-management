@@ -3,6 +3,8 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const Task = require('./models/task.js');
 const Auth = require('./models/auth.js');
+const authToken = require('./middleware/authToken.js').authToken;
+
 
 const app = express();
 const PORT = 3000;
@@ -25,31 +27,33 @@ app.post('/user/login', (req, res) => {
 });
 
 // Task CRUD operations
-app.get('/tasks/:userId', (req, res) => {
+app.get('/tasks/:userId', authToken, (req, res) => {
+  console.log('req.body = ', req.body);
+
   Task.getTasks(req.params.userId)
     .then((tasks) => res.send(tasks))
     .catch((err) => res.status(404));
 });
 
-app.post('/task', (req, res) => {
+app.post('/task', authToken, (req, res) => {
   Task.addTask(req.body)
     .then((id) => res.send(id.toString()))
     .catch((err) => res.status(404))
 });
 
-app.delete('/task/:id', (req, res) => {
+app.delete('/task/:id', authToken, (req, res) => {
   Task.deleteTask(req.params.id)
     .then((response) => res.send(`Task ${id} succesfully deleted`))
     .catch((err) => res.send(err));
 })
 
-app.put('/task/description/:id', (req, res) => {
+app.put('/task/description/:id', authToken, (req, res) => {
   Task.updateDescription(req.params.id, req.body.description)
     .then((response) => res.send(`Task ${id} succesfully updated description`))
     .catch((err) => res.send(err));
 });
 
-app.put('/task/isComplete/:id', (req, res) => {
+app.put('/task/isComplete/:id', authToken, (req, res) => {
   const isComplete = req.body.isComplete ? 1 : 0;
 
   Task.updateComplete(req.params.id, isComplete)
