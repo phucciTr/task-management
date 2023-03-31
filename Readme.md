@@ -3,7 +3,7 @@ Please follow these step for a demo:
 
 - After cloning the repo, cd into the root directory of the repo.
 
-- Please login to your mysql database from the command line and drop the database name "task-management" as this project will have different structure for the tables compares to the previous one, so the old database needed to be removed for the createtion of the new one. (This is needed to be done once after you clone this repo for the first time)
+- Please login to your mysql database from the command line and drop the database name "task_management" as this project will have different structure for the tables compares to the previous one, so the old database needed to be removed for the createtion of the new one. (This is needed to be done once after you clone this repo for the first time)
 
 - Once in the root directory of this repo, run this command without the quotes "npm run install".
 
