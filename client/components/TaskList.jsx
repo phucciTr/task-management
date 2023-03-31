@@ -6,13 +6,19 @@ import FilterTask from './FilterTask.jsx';
 import axios from 'axios';
 
 
-const TaskList = ({ loggedInUser, userId, setStep }) => {
+const TaskList = ({ user, setStep }) => {
   const [tasks, setTasks] = useState([]);
   const [completeFilter, setCompleteFilter] = useState(false);
+  const [authErr, setAuthErr] = useState('');
+  const accessHeaders = { headers: {"Authorization" : `Bearer ${ user.accessToken }`} };
 
   useEffect(() => {
-    axios.get(`/tasks/${userId}`)
-      .then((json) => setTasks(json.data));
+    axios.get(`/tasks/${user.userId}`, accessHeaders)
+      .then((json) => setTasks(json.data))
+      .catch((err) => {
+        console.log('Error fetching tasks = ', err);
+        setAuthErr(err.response.data);
+      });
   }, [])
 
   const manipulateTask = async (index, action, newDescription) => {
@@ -21,33 +27,37 @@ const TaskList = ({ loggedInUser, userId, setStep }) => {
 
     try {
       if (action === 'delete') {
-        await axios.delete(`/task/${taskId}`);
+        await axios.delete(`/task/${taskId}`, accessHeaders);
         newTasks.splice(index, 1);
       }
       if (action === 'edit') {
-        await axios.put(`/task/description/${taskId}`, { description: newDescription });
+        await axios.put(`/task/description/${taskId}`, { description: newDescription }, accessHeaders);
         newTasks[index].description = newDescription;
       }
       if (action === 'check') {
-        await axios.put(`/task/isComplete/${taskId}`, { isComplete: !currTask.isComplete });
+        await axios.put(`/task/isComplete/${taskId}`, { description: newDescription }, accessHeaders);
         newTasks[index].isComplete = !currTask.isComplete;
       }
 
       setTasks(newTasks);
     } catch(err) {
       console.log('error manipulating task = ', err);
+      setAuthErr(err.response.data);
     }
   }
 
   const addTask = (newTask) => {
-    newTask.userId = userId;
+    newTask.userId = user.userId;
 
-    axios.post('/task', newTask)
+    axios.post('/task', newTask, accessHeaders)
       .then((res) => {
         newTask.id = res.data;
         setTasks([...tasks, newTask]);
       })
-      .catch((err) => console.log('err = ', err));
+      .catch((err) => {
+        console.log('err adding task = ', err);
+        setAuthErr(err.response.data);
+      });
   };
 
   const handleLinkClick = (e) => {
@@ -57,7 +67,7 @@ const TaskList = ({ loggedInUser, userId, setStep }) => {
 
   return (
     <div>
-      <h1>{`hello ${loggedInUser}`} </h1>
+      <h1>{`hello ${user.name}`} </h1>
       <AddTask addTask={addTask}/>
       <FilterTask setTasks={setTasks} setCompleteFilter={setCompleteFilter} tasks={tasks}/>
 
@@ -77,6 +87,7 @@ const TaskList = ({ loggedInUser, userId, setStep }) => {
       <br/>
       <br/>
 
+      {authErr === 'Not authorized' && <h2>User is not authorized to view tasks or perform task action due to invalid web token</h2>}
       <a href='' onClick={handleLinkClick} >Log Out</a>
     </div>
   )

@@ -8,7 +8,7 @@ import axios from 'axios';
 
 const App = () => {
   const [step, setStep] = useState(1);
-  const [loggedInUser, setLoggedInUser] = useState({ name: '', id: '' });
+  const [loggedInUser, setLoggedInUser] = useState({ name: '', userId: '', accessToken: '' });
   const [loginError, setLoginError] = useState('');
 
   const submitForm = async (authType, user) => {
@@ -20,7 +20,7 @@ const App = () => {
       }
       if (authType === 'login') {
         const loggedRes = await axios.post(('/user/login'), user);
-        setLoggedInUser({name: loggedRes.data.name, id: loggedRes.data.id });
+        setLoggedInUser({name: loggedRes.data.name, userId: loggedRes.data.id, accessToken: loggedRes.data.accessToken });
         setStep(2);
         setLoginError('');
       }
@@ -31,10 +31,11 @@ const App = () => {
     }
   }
 
+
   const pages = [
     <SignUp setStep={setStep} submitForm={submitForm} setLoginError={setLoginError} />,
     <Login setStep={setStep} submitForm={submitForm} setLoginError={setLoginError}/>,
-    <TaskList loggedInUser={loggedInUser.name} userId={loggedInUser.id} setStep={setStep} />
+    <TaskList user={loggedInUser} setStep={setStep}/>
   ];
 
   return (
